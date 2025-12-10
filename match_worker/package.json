@@ -1,0 +1,11 @@
+{
+  "name": "match_worker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "ioredis": "^5.0.0",
+    "socket.io": "^4.0.0",
+    "socket.io-client": "^4.0.0",
+    "axios": "^0.27.0"
+  }
+}
