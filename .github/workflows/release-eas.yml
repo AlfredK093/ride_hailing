@@ -1,0 +1,42 @@
+name: EAS Build (Android/iOS)
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  eas-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        working-directory: ./mobile
+        run: npm ci
+
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+
+      - name: EAS Login
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+        run: eas login --token $EAS_TOKEN
+
+      - name: EAS Build Android
+        working-directory: ./mobile
+        env:
+          EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
+        run: eas build -p android --profile production --non-interactive
+
+      - name: EAS Build iOS
+        if: ${{ secrets.EAS_TOKEN && secrets.APPLE_APP_SPEC }}
+        working-directory: ./mobile
+        env:
+          EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
+        run: eas build -p ios --profile production --non-interactive

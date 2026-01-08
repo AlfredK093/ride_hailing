@@ -1,0 +1,33 @@
+name: Release Mobile Web
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        working-directory: ./mobile
+        run: npm ci
+
+      - name: Build web (Expo)
+        working-directory: ./mobile
+        run: |
+          # build web output into web-build
+          npx expo-cli build:web --no-interactive || npx expo build:web --no-interactive
+
+      - name: Upload web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: mobile/web-build
