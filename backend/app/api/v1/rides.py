@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app import schemas, crud
 from app.deps import get_db
 import json
-import aioredis
+import redis.asyncio as aioredis
 from app.config import settings
 
 router = APIRouter()
